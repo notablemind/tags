@@ -11,4 +11,10 @@ clean:
 index.js: index.jsx
 	@jsx index.jsx > index.js
 
+test/react.js:
+	@curl -L -o test/react.js http://fb.me/react-0.5.1.js
+
+example: test/react.js build
+	@xdg-open test/example.html
+
 .PHONY: clean
