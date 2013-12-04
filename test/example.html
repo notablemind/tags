@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tags Example</title>
+    <script src="react-with-addons.js"></script>
+    <script src="../build/build.js"></script>
+    <link rel="stylesheet" href="../build/build.css">
+  </head>
+  <body>
+    <h2>Tags Example</h2>
+    <div id="place"></div>
+    <div id="foc"></div>
+    <script>
+      var tags = React.renderComponent(require('tags')({defaultValue: ['one', 'two',
+            'three']}),
+          document.getElementById('place'))
+    </script>
+    <!--script>
+      React.renderComponent(React.createClass({
+        getInitialState: function () {return {focused: false}},
+        render: function () {
+          return React.DOM.div({}, [require('tags')({defaultValue: ['two', 'three',
+            'four'], focused: this.state.focused}),
+            React.DOM.button({onClick: function () {this.setState({focused:
+                true})}.bind(this)})])
+        }
+      }), document.getElementById('foc'))
+    </script-->
+  </body>
+</html>
+
+
+

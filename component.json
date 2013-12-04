@@ -1,0 +1,19 @@
+{
+  "name": "tags",
+  "repo": "noteablemind/tags",
+  "description": "A react component for managing tags",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "lodash/lodash": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ],
+  "styles": [
+    "tags.css"
+  ]
+}
