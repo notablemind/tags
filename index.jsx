@@ -2,6 +2,26 @@
 
 var _ = require('lodash')
 
+/**
+ *
+ * Key bindings
+ * - tab / shift-tab
+ *    move to the next / previous tag. If the current tag is empty, then it
+ *    will be removed
+ * - backspace in an empty tag
+ *    remove this tag and go to the previous one
+ * - return
+ *    commit this tag (if it isn't empty) and add another
+ *
+ * Input attributes:
+ * - "focused" - whether it should start focused
+ * - defaultValue - the value to prepopulate with. Use the "load" function to
+ *   get dynamic information
+ * - load(cb(tags)) pass in a getter
+ * - save(tags, cb(tags)) pass in a setter
+ *
+ */
+
 function nextEditing(shift, editing, ln) {
   if (editing === false) {
     if (shift) return ln-1
@@ -18,9 +38,9 @@ var Tags = React.createClass({
     var defaultValue = this.props.defaultValue
     return {
       value: defaultValue != null ? defaultValue : [],
-      input: '',
       focused: this.props.focused || false,
-      editing: false
+      editing: false,
+      input: ''
     }
   },
   // loading data
@@ -54,6 +74,11 @@ var Tags = React.createClass({
     this.setState({input: e.target.value})
   },
   keyDown: function (e) {
+    // backspace
+    if (e.keyCode === 8 && !this.state.input.length && this.state.value.length) {
+      e.preventDefault()
+      return this.backSpace()
+    }
     if (e.keyCode !== 13 && e.keyCode !== 9) return
     var editing = false
     if (e.keyCode === 9) {
@@ -73,11 +98,25 @@ var Tags = React.createClass({
     this.setState({focused: true, editing: false})
   },
   // add and remove
+  backSpace: function(){
+    var tags = this.state.value.slice()
+    if (this.state.editing !== false) {
+      if (this.state.editing === 0) return
+      tags.splice(this.state.editing, 1)
+      this.editTag(this.state.editing - 1, tags)
+      return false
+    }
+    this.editTag(tags.length - 1)
+    return false
+  },
   doneInput: function (blur, editing) {
     if (this.state.editing !== false) {
       this.edited(blur, editing)
     } else {
       if (this.state.input.trim() === '') {
+        if (editing !== false) {
+          this.editTag(editing)
+        }
         return
       }
       this.addTag(this.state.input, blur, editing)
@@ -90,6 +129,10 @@ var Tags = React.createClass({
     if (arguments.length < 2) editing = false
     if (editing !== false) input = this.state.value[editing]
     tags[this.state.editing] = this.state.input
+    if (!this.state.input.trim().length) {
+      tags.splice(this.state.editing, 1)
+      if (editing > this.state.editing) editing -= 1
+    }
     this.setState({value: tags, input: input, focused: !blur, editing: editing})
     if (!this.props.onChange) return
     this.props.onChange(old, tag, function (tags) {
@@ -119,8 +162,10 @@ var Tags = React.createClass({
       this.setState({value: tags})
     }.bind(this))
   },
-  editTag: function (i) {
-    this.setState({editing: i, focused: true, input: this.state.value[i]})
+  editTag: function (i, tags) {
+    var state = {editing: i, focused: true, input: this.state.value[i]}
+    if (arguments.length === 2) state.value = tags
+    this.setState(state)
   },
   // and the render!
   render: function () {
