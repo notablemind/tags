@@ -22,6 +22,8 @@ var _ = require('lodash')
  *
  */
 
+// TODO: blur && click interfere atm.
+
 function nextEditing(shift, editing, ln) {
   if (editing === false) {
     if (shift) return ln-1
@@ -79,6 +81,10 @@ var Tags = React.createClass({
       e.preventDefault()
       return this.backSpace()
     }
+    if (e.keyCode === 27) {
+      e.preventDefault()
+      return this.blur()
+    }
     if (e.keyCode !== 13 && e.keyCode !== 9) return
     var editing = false
     if (e.keyCode === 9) {
@@ -104,6 +110,10 @@ var Tags = React.createClass({
       if (this.state.editing === 0) return
       tags.splice(this.state.editing, 1)
       this.editTag(this.state.editing - 1, tags)
+      if (!this.props.save) return false
+      this.props.save(tags, function (tags) {
+        this.setState({value: tags})
+      }.bind(this))
       return false
     }
     this.editTag(tags.length - 1)
@@ -127,15 +137,15 @@ var Tags = React.createClass({
       , old = tags[this.state.editing]
       , input = ''
     if (arguments.length < 2) editing = false
-    if (editing !== false) input = this.state.value[editing]
-    tags[this.state.editing] = this.state.input
+    if (editing !== false && 'undefined' !== typeof editing) input = this.state.value[editing]
+    var tag = tags[this.state.editing] = this.state.input
     if (!this.state.input.trim().length) {
       tags.splice(this.state.editing, 1)
       if (editing > this.state.editing) editing -= 1
     }
     this.setState({value: tags, input: input, focused: !blur, editing: editing})
-    if (!this.props.onChange) return
-    this.props.onChange(old, tag, function (tags) {
+    if (!this.props.save || old === tag) return
+    this.props.save(tags, function (tags) {
       this.setState({value: tags})
     }.bind(this))
   },
@@ -143,11 +153,11 @@ var Tags = React.createClass({
     var tags = this.state.value
       , input = ''
     tags.push(tag)
-    if (arguments.length < 2) editing = false
+    if (arguments.length < 2 || 'undefined' === typeof editing) editing = false
     if (editing !== false) input = this.state.value[editing]
     this.setState({value: tags, input: input, focused: !unfocus, editing: editing})
-    if (!this.props.onAdd) return
-    this.props.onAdd(tag, function (tags) {
+    if (!this.props.save) return
+    this.props.save(tags, function (tags) {
       this.setState({value: tags})
     }.bind(this))
   },
@@ -157,8 +167,8 @@ var Tags = React.createClass({
     if (i === -1) return console.warn("Removing a non-existent tag", tag, tags)
     tags.splice(i, 1)
     this.setState({value: tags})
-    if (!this.props.onRemove) return
-    this.props.onRemove(tag, function (tags) {
+    if (!this.props.save) return
+    this.props.save(tags, function (tags) {
       this.setState({value: tags})
     }.bind(this))
   },
