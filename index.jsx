@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var _ = require('lodash')
+  , keys = require('keys')
 
 /**
  *
@@ -26,7 +27,7 @@ var _ = require('lodash')
 
 function nextEditing(shift, editing, ln) {
   if (editing === false) {
-    if (shift) return ln-1
+    if (shift && ln > 0) return ln-1
     return false
   }
   editing += shift ? -1 : 1
@@ -36,15 +37,21 @@ function nextEditing(shift, editing, ln) {
 }
 
 var Tags = React.createClass({
+
   getInitialState: function () {
     var defaultValue = this.props.defaultValue
-    return {
-      value: defaultValue != null ? defaultValue : [],
+      , editing = this.props.editing
+      , value = defaultValue != null ? defaultValue : []
+      , input = ''
+    editing = 'undefined' === typeof editing ? false : editing,
+    return this.stateMe({
+      value: value,
+      editing: editing,
       focused: this.props.focused || false,
-      editing: false,
-      input: ''
-    }
+      input: editing
+    })
   },
+
   // loading data
   componentWillMount: function () {
     this.load()
@@ -52,9 +59,10 @@ var Tags = React.createClass({
   load: function () {
     if (!this.props.load) return
     this.props.load(function (tags) {
-      this.setState({value: tags})
+      this.setState(this.stateMe({value: tags})
     }.bind(this))
   },
+
   // all about the focus
   componentDidMount: function () {
     if (this.state.focused) {
@@ -71,68 +79,69 @@ var Tags = React.createClass({
       this.refs.input.getDOMNode().focus()
     }
   },
+
   // events
   inputChange: function (e) {
     this.setState({input: e.target.value})
   },
-  keyDown: function (e) {
-    // backspace
-    if (e.keyCode === 8 && !this.state.input.length && this.state.value.length) {
-      e.preventDefault()
-      return this.backSpace()
-    }
-    if (e.keyCode === 27) {
-      e.preventDefault()
-      return this.blur()
-    }
-    if (e.keyCode !== 13 && e.keyCode !== 9) return
-    var editing = false
-    if (e.keyCode === 9) {
-      editing = nextEditing(e.shiftKey, this.state.editing, this.state.value.length)
-      if (e.shiftKey && this.state.editing === 0 && this.props.prev) {
-        if (this.props.prev()) {
-          e.preventDefault()
-          if (this.state.focused) this.blur()
-          return false
-        }
-      }
-      if (!e.shiftKey && this.state.editing === false && editing === false && this.props.next) {
-        if (this.props.next()) {
-          e.preventDefault()
-          if (this.state.focused) this.blur()
-          return false
-        }
-      }
-    }
-    this.doneInput(false, editing)
-    e.preventDefault()
+
+  backspace: function () {
   },
-  blur: function () {
-    if (this.state.input.trim() !== '') {
-      this.doneInput(true)
-    } else {
-      this.setState({focused: false})
+
+  tab: function () {
+  },
+
+  doStateChange: function (which) {
+    var nstate = this.stateChange[which]
+  },
+
+  stateChange: function (name) {
+    var nstate = state[name](this.state)
+    if (nstate) {
+      this.setState(nstate)
     }
+  },
+  keyDown: keys({
+    'backspace': function (e) {
+      if (this.state.input.length !== 0) return
+      e.preventDefault()
+      this.stateChange('backspace')
+    },
+    'escape': function (e) {
+      e.preventDefault()
+      this.stateChange('blur')
+    },
+    'return': function (e) {
+      e.preventDefault()
+      this.stateChange('return')
+    },
+    'tab': function (e) {
+      e.preventDefault()
+      this.stateChange('tab')
+      // adding a new tag
+    },
+    'shift tab': function (e) {
+      e.preventDefault()
+      // in the first position
+      if (0 === this.state.editing || this.state.value.length === 0) {
+        if (this.props.prev && this.props.prev()) {
+          if (this.state.focused) this.blur()
+          return false
+        }
+        return this.doneInput(false, 0)
+      }
+      var editing = this.state.editing - 1
+      if (editing < 0) editing = 0
+      if (this.state.value.length === 0) editing = false
+      this.doneInput(false, editing)
+    }
+  }, 
+
+  blur: function () {
   },
   focus: function () {
-    this.setState({focused: true, editing: false})
   },
   // add and remove
-  backSpace: function(){
-    var tags = this.state.value.slice()
-    if (this.state.editing !== false) {
-      if (this.state.editing === 0) return
-      tags.splice(this.state.editing, 1)
-      this.editTag(this.state.editing - 1, tags)
-      if (!this.props.save) return false
-      this.props.save(tags, function (tags) {
-        this.setState({value: tags})
-      }.bind(this))
-      return false
-    }
-    this.editTag(tags.length - 1)
-    return false
-  },
   doneInput: function (blur, editing) {
     if (this.state.editing !== false) {
       this.edited(blur, editing)
@@ -145,23 +154,6 @@ var Tags = React.createClass({
       }
       this.addTag(this.state.input, blur, editing)
     }
-  },
-  edited: function (blur, editing) {
-    var tags = this.state.value
-      , old = tags[this.state.editing]
-      , input = ''
-    if (arguments.length < 2) editing = false
-    if (editing !== false && 'undefined' !== typeof editing) input = this.state.value[editing]
-    var tag = tags[this.state.editing] = this.state.input
-    if (!this.state.input.trim().length) {
-      tags.splice(this.state.editing, 1)
-      if (editing > this.state.editing) editing -= 1
-    }
-    this.setState({value: tags, input: input, focused: !blur, editing: editing})
-    if (!this.props.save || old === tag) return
-    this.props.save(tags, function (tags) {
-      this.setState({value: tags})
-    }.bind(this))
   },
   addTag: function (tag, unfocus, editing) {
     var tags = this.state.value
@@ -178,33 +170,33 @@ var Tags = React.createClass({
   removeTag: function (tag) {
     var tags = this.state.value
       , i = tags.indexOf(tag)
-    if (i === -1) return console.warn("Removing a non-existent tag", tag, tags)
-    tags.splice(i, 1)
-    this.setState({value: tags})
-    if (!this.props.save) return
-    this.props.save(tags, function (tags) {
-      this.setState({value: tags})
-    }.bind(this))
+      if (i === -1) return console.warn("Removing a non-existent tag", tag, tags)
+        tags.splice(i, 1)
+          this.setState({value: tags})
+          if (!this.props.save) return
+            this.props.save(tags, function (tags) {
+              this.setState({value: tags})
+            }.bind(this))
   },
   editTag: function (i, tags) {
     var state = {editing: i, focused: true, input: this.state.value[i]}
     if (arguments.length === 2) state.value = tags
     else tags = this.state.value
-    if (state.editing > tags.length) state.editing = false
-    this.setState(state)
+      if (state.editing > tags.length) state.editing = false
+        this.setState(state)
   },
   // and the render!
   render: function () {
     var ln = this.state.input.length
       , children = this.state.value.map(function (tag, i) {
-          return (
-            <div className="tag">
-              <span className="text" onClick={this.editTag.bind(this, i)}>{tag}</span>
-              <div className="remove-tag small-btn"
-                    onClick={this.removeTag.bind(this, tag)}>&times;</div>
-            </div>
+        return (
+          <div className="tag">
+          <span className="text" onClick={this.editTag.bind(this, i)}>{tag}</span>
+          <div className="remove-tag small-btn"
+          onClick={this.removeTag.bind(this, tag)}>&times;</div>
+          </div>
           )
-        }.bind(this))
+      }.bind(this))
 
     if (this.state.focused) {
       var input = (
