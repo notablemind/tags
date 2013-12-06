@@ -10,6 +10,8 @@
   <body>
     <h2>Tags Example</h2>
     <div id="place"></div>
+    <h2>Tags Networked</h2>
+    <div id="netwalk"></div>
     <h2>With externally induced focus</h2>
     <div id="foc"></div>
     <pre id="output"></pre>
@@ -17,6 +19,30 @@
       var tags = React.renderComponent(require('tags')({
         defaultValue: ['one', 'two', 'three', 'four', 'five']
       }), document.getElementById('place'))
+    </script>
+    <script>
+      var t1 = require('tags')({
+        next: function () {
+        //setTimeout(function () {
+          t2.editTag(0)
+          //}, 100)
+          return true
+        },
+        defaultValue: ['one', 'two']
+      })
+      var t2 = require('tags')({
+        prev: function () {
+        //setTimeout(function () {
+          t1.focus()
+          //}, 100)
+          return true
+        },
+        defaultValue: ['three', 'four']
+      })
+      React.renderComponent(React.DOM.div({}, [
+        t1, t2
+      ]), document.getElementById('netwalk'))
+
     </script>
     <script>
       var log = document.getElementById('output')

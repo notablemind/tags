@@ -89,6 +89,20 @@ var Tags = React.createClass({
     var editing = false
     if (e.keyCode === 9) {
       editing = nextEditing(e.shiftKey, this.state.editing, this.state.value.length)
+      if (e.shiftKey && this.state.editing === 0 && this.props.prev) {
+        if (this.props.prev()) {
+          e.preventDefault()
+          if (this.state.focused) this.blur()
+          return false
+        }
+      }
+      if (!e.shiftKey && this.state.editing === false && editing === false && this.props.next) {
+        if (this.props.next()) {
+          e.preventDefault()
+          if (this.state.focused) this.blur()
+          return false
+        }
+      }
     }
     this.doneInput(false, editing)
     e.preventDefault()
@@ -175,6 +189,8 @@ var Tags = React.createClass({
   editTag: function (i, tags) {
     var state = {editing: i, focused: true, input: this.state.value[i]}
     if (arguments.length === 2) state.value = tags
+    else tags = this.state.value
+    if (state.editing > tags.length) state.editing = false
     this.setState(state)
   },
   // and the render!
@@ -193,7 +209,6 @@ var Tags = React.createClass({
     if (this.state.focused) {
       var input = (
         <input ref="input"
-          style={{}}
           onBlur={this.blur}
           style={{
             width: (ln > 3 ? ln : 3)*7 + 20
