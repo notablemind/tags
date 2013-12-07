@@ -12,7 +12,8 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": [
-    "index.js"
+    "index.js",
+    "states.js"
   ],
   "styles": [
     "tags.css"

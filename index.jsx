@@ -3,6 +3,8 @@
 var _ = require('lodash')
   , keys = require('keys')
 
+  , states = require('./states')
+
 /**
  *
  * Key bindings
@@ -73,15 +75,21 @@ var Tags = React.createClass({
   },
 
   stateChange: function (name) {
-    var nstate = state[name](this.state)
-    if (nstate) {
-      this.setState(nstate)
+    var tags = this.state.value.slice()
+    var nstate = states[name](this.state, this.props)
+    if (!nstate) return
+    this.setState(nstate)
+    if (!nstate.value) return
+    if (!_.isEqual(tags, nstate.value) && this.props.save) {
+      this.props.save(nstate.value, function (tags) {
+        this.setState({value: tags})
+      })
     }
   },
 
   keyDown: keys({
     'backspace': function (e) {
-      if (this.state.input.length !== 0) return
+      if (this.state.input.length !== 0) return true
       e.preventDefault()
       this.stateChange('backspace')
     },
@@ -96,7 +104,6 @@ var Tags = React.createClass({
     'tab': function (e) {
       e.preventDefault()
       this.stateChange('tab')
-      // adding a new tag
     },
     'shift tab': function (e) {
       e.preventDefault()
@@ -105,11 +112,7 @@ var Tags = React.createClass({
   }), 
 
   blur: function () {
-    this.setState({
-      editing: false,
-      input: '',
-      focused: false
-    })
+    this.stateChange('blur')
   },
   focus: function () {
     this.setState({
@@ -134,6 +137,11 @@ var Tags = React.createClass({
       editing: false,
       tags: tags
     })
+    if (this.props.save) {
+      this.props.save(tags, function (tags) {
+        this.setState({value: tags})
+      })
+    }
   },
 
   // and the render!
