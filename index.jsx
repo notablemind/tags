@@ -30,13 +30,13 @@ var Tags = React.createClass({
       , editing = this.props.editing
       , value = defaultValue != null ? defaultValue : []
       , input = ''
-    editing = 'undefined' === typeof editing ? false : editing,
-    return this.stateMe({
+    editing = 'undefined' === typeof editing ? false : editing
+    return {
       value: value,
       editing: editing,
       focused: this.props.focused || false,
       input: editing
-    })
+    }
   },
 
   // loading data
@@ -44,9 +44,9 @@ var Tags = React.createClass({
     this.load()
   },
   load: function () {
-    if (!this.props.load) return
+    if (!this.props.load) return;
     this.props.load(function (tags) {
-      this.setState(this.stateMe({value: tags})
+      this.setState({value: tags})
     }.bind(this))
   },
 
@@ -102,7 +102,7 @@ var Tags = React.createClass({
       e.preventDefault()
       this.stateChange('shift tab')
     }
-  }, 
+  }), 
 
   blur: function () {
     this.setState({
@@ -144,7 +144,7 @@ var Tags = React.createClass({
             <div className="tag">
               <span className="text" onClick={this.edit.bind(this, i)}>{tag}</span>
               <div className="remove-tag small-btn"
-              onClick={this.removeTag.bind(this, i)}>&times;</div>
+              onClick={this.remove.bind(this, i)}>&times;</div>
             </div>
           )
         }.bind(this))

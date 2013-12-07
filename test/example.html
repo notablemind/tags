@@ -16,7 +16,8 @@
     <div id="foc"></div>
     <pre id="output"></pre>
     <script>
-      var tags = React.renderComponent(require('tags')({
+      var Tags = require('tags')
+      var tags = React.renderComponent(Tags({
         defaultValue: ['one', 'two', 'three', 'four', 'five']
       }), document.getElementById('place'))
     </script>
@@ -30,7 +31,7 @@
         },
         defaultValue: ['one', 'two']
       })
-      var t2 = require('tags')({
+      var t2 = Tags({
         prev: function () {
         //setTimeout(function () {
           t1.focus()
@@ -52,7 +53,7 @@
         },
         render: function () {
           return React.DOM.div({}, [
-            require('tags')({
+            Tags({
               defaultValue: ['two', 'three', 'four'],
               focused: this.state.focused,
               load: function (done) {

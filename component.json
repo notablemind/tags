@@ -5,7 +5,8 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {
-    "lodash/lodash": "*"
+    "lodash/lodash": "*",
+    "notablemind/keys": "*"
   },
   "development": {},
   "license": "MIT",
@@ -15,5 +16,6 @@
   ],
   "styles": [
     "tags.css"
-  ]
+  ],
+  "remotes": []
 }
