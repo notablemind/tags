@@ -5,6 +5,7 @@ module.exports = {
   backspace: backspace,
   blur: blur,
   'return': return_,
+  'shift tab': shiftTab,
   tab: tab
 }
 
@@ -18,12 +19,64 @@ function stateMe(cur, state) {
   return state
 }
 
-/*
-function tab(state) {
+function shiftTab(state, props) {
+  var tags = state.value
   if (state.editing === false) {
-    if (
+    if (state.input.trim() === '') {
+      return stateMe(state, {
+        editing: state.value.length ? state.value.length - 1 : false,
+      })
+    }
+    tags.push(state.input)
+    return stateMe(state, {
+      value: tags,
+      editing: tags.length - 2
+    })
+  }
+  if (state.input.trim() === '') {
+    if (state.editing > 0)
+      tags.splice(state.editing, 1)
+    else
+      tags[0] = ''
+  } else {
+    tags[state.editing] = state.input
+  }
+  if (state.editing === 0 && props && props.prev && props.prev()) {
+    return {focused: false, value: tags, input: ''}
+  }
+  return stateMe(state, {
+    value: tags,
+    editing: state.editing - 1
+  })
 }
-*/
+
+function tab(state, props) {
+  var tags = state.value
+  if (state.editing === false) {
+    if (state.input.trim() === '') {
+      if (props && props.next && props.next()) {
+        return {focused: false, input: ''}
+      }
+      return
+    }
+    tags.push(state.input)
+    return {
+      value: tags,
+      input: ''
+    }
+  }
+  if (state.input.trim() === '') {
+    tags.splice(state.editing, 1)
+  } else {
+    tags[state.editing] = state.input
+    state.editing += 1
+  }
+  return stateMe(state, {
+    value: tags,
+    editing: state.editing,
+    input: ''
+  })
+}
 
 function backspace(state) {
   var editing = state.editing
@@ -109,6 +162,7 @@ function blur(state) {
   }
 }
 
+/*
 function tab(state, next) {
   if (false === state.editing) {
     if (next && next()) {
@@ -123,4 +177,5 @@ function tab(state, next) {
     }
   this.doneInput(false, editing)
 }
+*/
 

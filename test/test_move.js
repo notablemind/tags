@@ -22,7 +22,8 @@ var cases = {
       value: ['one', 'two'],
       editing: 1,
       input: 'two'
-    }], ['when editing, should remove', {
+    }],
+    ['when editing, should remove', {
       value: ['one', 'two'],
       editing: 1,
       input: ''
@@ -30,7 +31,8 @@ var cases = {
       value: ['one'],
       editing: 0,
       input: 'one'
-    }], ['when adding and no tags, should noop', {
+    }],
+    ['when adding and no tags, should noop', {
       value: [],
       editing: false,
       input: ''
@@ -52,7 +54,6 @@ var cases = {
       input: '',
       editing: false
     }],
-
     ['when editing', {
       value: ['one'],
       input: 'two',
@@ -63,7 +64,6 @@ var cases = {
       editing: false,
       focused: false
     }],
-
     ['when adding nothing', {
       value: ['one', 'two'],
       input: '',
@@ -74,7 +74,6 @@ var cases = {
       editing: false,
       focused: false
     }],
-
     ['when removing', {
       value: ['one', 'two'],
       input: '',
@@ -85,7 +84,6 @@ var cases = {
       editing: false,
       focused: false
     }]
-
   ],
 
   'return': [
@@ -108,6 +106,7 @@ var cases = {
       input: '',
     }]
   ],
+
   'tab': [
     ['when adding', {
       value: ['1', '2'],
@@ -117,6 +116,126 @@ var cases = {
       value: ['1', '2', '34'],
       input: '',
       editing: false
+    }],
+    ['when adding nothing', {
+      value: ['abc'],
+      editing: false,
+      input: ''
+    }, {
+      value: ['abc'],
+      editing: false,
+      input: ''
+    }],
+    ['when removing', {
+      value: ['abc', 'asd'],
+      input: '',
+      editing: 0
+    }, {
+      value: ['asd'],
+      input: 'asd',
+      editing: 0
+    }],
+    ['when removing from the end', {
+      value: ['abc', 'asd'],
+      input: '',
+      editing: 1
+    }, {
+      value: ['abc'],
+      input: '',
+      editing: false
+    }],
+    ['when changing', {
+      value: ['abc', 'def'],
+      editing: 0,
+      input: 'b'
+    }, {
+      value: ['b', 'def'],
+      editing: 1,
+      input: 'def'
+    }],
+    ['when changing the last', {
+      value: ['abc', 'def'],
+      editing: 1,
+      input: 'e'
+    }, {
+      value: ['abc', 'e'],
+      editing: false,
+      input: ''
+    }]
+  ],
+
+  'shift tab': [
+    ['when adding', {
+      value: ['a', 'b'],
+      input: 'c',
+      editing: false
+    }, {
+      value: ['a', 'b', 'c'],
+      input: 'b',
+      editing: 1
+    }],
+    ['when adding nothing', {
+      value: ['a', 'b'],
+      input: '',
+      editing: false
+    }, {
+      value: ['a', 'b'],
+      input: 'b',
+      editing: 1
+    }],
+    ['when removing', {
+      value: ['a', 'b', 'c'],
+      editing: 1,
+      input: ''
+    }, {
+      value: ['a', 'c'],
+      editing: 0,
+      input: 'a'
+    }],
+    ['when removing from the beginning', {
+      value: ['a', 'b'],
+      editing: 0,
+      input: ''
+    }, {
+      value: ['', 'b'],
+      editing: 0,
+      input: ''
+    }],
+    ['when changing', {
+      value: ['a', 'b', 'c'],
+      editing: 1,
+      input: 'd'
+    }, {
+      value: ['a', 'd', 'c'],
+      editing: 0,
+      input: 'a'
+    }],
+    ['when changing the first', {
+      value: ['a', 'b', 'c'],
+      editing: 0,
+      input: 'd'
+    }, {
+      value: ['d', 'b', 'c'],
+      editing: 0,
+      input: 'd'
+    }],
+    ['when adding and there are no tags', {
+      value: [],
+      editing: false,
+      input: 'abc'
+    }, {
+      value: ['abc'],
+      editing: 0,
+      input: 'abc'
+    }],
+    ['when removing and there are no tags', {
+      value: [],
+      editing: false,
+      input: ''
+    }, {
+      value: [],
+      editing: false,
+      input: ''
     }]
   ]
 

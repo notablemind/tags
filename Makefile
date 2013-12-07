@@ -8,8 +8,14 @@ components: component.json
 clean:
 	rm -fr build components template.js
 
+blanket:
+	@mocha -R html-cov --require blanket > coverage.html
+
 index.js: index.jsx
 	@jsx index.jsx > index.js
+
+test:
+	@mocha -R spec
 
 test/react.js:
 	@curl -L -o test/react.js http://fb.me/react-0.5.1.js
@@ -17,4 +23,4 @@ test/react.js:
 example: test/react.js build
 	@xdg-open test/example.html
 
-.PHONY: clean
+.PHONY: clean test

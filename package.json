@@ -12,7 +12,12 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "blanket": {
+      "pattern": ".js",
+      "onlyCwd": true,
+      "data-cover-never": ["node_modules", "test"]
+    }
   },
   "repository": {
     "type": "git",
