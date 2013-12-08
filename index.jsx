@@ -5,32 +5,12 @@ var _ = require('lodash')
 
   , states = require('./states')
 
-/**
- *
- * Key bindings
- * - tab / shift-tab
- *    move to the next / previous tag. If the current tag is empty, then it
- *    will be removed
- * - backspace in an empty tag
- *    remove this tag and go to the previous one
- * - return
- *    commit this tag (if it isn't empty) and add another
- *
- * Input attributes:
- * - "focused" - whether it should start focused
- * - defaultValue - the value to prepopulate with. Use the "load" function to
- *   get dynamic information
- * - load(cb(tags)) pass in a getter
- * - save(tags, cb(tags)) pass in a setter
- *
- */
-
 var Tags = React.createClass({
 
   getInitialState: function () {
     var defaultValue = this.props.defaultValue
-      , editing = this.props.editing
       , value = defaultValue != null ? defaultValue : []
+      , editing = this.props.editing
       , input = ''
     editing = 'undefined' === typeof editing ? false : editing
     return {
@@ -90,23 +70,18 @@ var Tags = React.createClass({
   keyDown: keys({
     'backspace': function (e) {
       if (this.state.input.length !== 0) return true
-      e.preventDefault()
       this.stateChange('backspace')
     },
     'escape': function (e) {
-      e.preventDefault()
       this.stateChange('blur')
     },
     'return': function (e) {
-      e.preventDefault()
       this.stateChange('return')
     },
     'tab': function (e) {
-      e.preventDefault()
       this.stateChange('tab')
     },
     'shift tab': function (e) {
-      e.preventDefault()
       this.stateChange('shift tab')
     }
   }), 

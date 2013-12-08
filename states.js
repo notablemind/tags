@@ -99,30 +99,6 @@ function backspace(state) {
   })
 }
 
-/*
-function edited(blur, editing, save) {
-  var tags = state.value
-    , old = tags[state.editing]
-    , input = ''
-  if (arguments.length < 2) editing = false
-  if (editing !== false && 'undefined' !== typeof editing) input = this.state.value[editing]
-  var tag = tags[this.state.editing] = this.state.input
-  if (!this.state.input.trim().length) {
-    tags.splice(this.state.editing, 1)
-    if (editing > this.state.editing) editing -= 1
-  }
-  this.setState({value: tags, input: input, focused: !blur, editing: editing})
-  if (!this.props.save || old === tag) return
-  this.props.save(tags, function (tags) {
-    this.setState({value: tags})
-  }.bind(this))
-}
-
-function focus(state) {
-  return {focused: true, editing: false}
-}
-*/
-
 function return_(state) {
   var tags = state.value
   if (state.editing !== false) {
@@ -161,21 +137,4 @@ function blur(state) {
     input: ''
   }
 }
-
-/*
-function tab(state, next) {
-  if (false === state.editing) {
-    if (next && next()) {
-      if (state.focused) this.blur()
-        return false
-    }
-    return this.doneInput(false, false)
-  }
-  var editing = this.state.editing + 1
-    if (editing > this.state.value.length - 1) {
-      editing = false
-    }
-  this.doneInput(false, editing)
-}
-*/
 
