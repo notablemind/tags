@@ -9,7 +9,7 @@ var Tags = React.createClass({
 
   getInitialState: function () {
     var defaultValue = this.props.defaultValue
-      , value = defaultValue != null ? defaultValue : []
+      , value = defaultValue || []
       , editing = this.props.editing
       , input = ''
     editing = 'undefined' === typeof editing ? false : editing
@@ -17,7 +17,7 @@ var Tags = React.createClass({
       value: value,
       editing: editing,
       focused: this.props.focused || false,
-      input: editing
+      input: input
     }
   },
 
@@ -63,7 +63,7 @@ var Tags = React.createClass({
     if (!_.isEqual(tags, nstate.value) && this.props.save) {
       this.props.save(nstate.value, function (tags) {
         this.setState({value: tags})
-      })
+      }.bind(this))
     }
   },
 
@@ -115,7 +115,7 @@ var Tags = React.createClass({
     if (this.props.save) {
       this.props.save(tags, function (tags) {
         this.setState({value: tags})
-      })
+      }.bind(this))
     }
   },
 

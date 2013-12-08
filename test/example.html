@@ -6,15 +6,30 @@
     <script src="react.js"></script>
     <script src="../build/build.js"></script>
     <link rel="stylesheet" href="../build/build.css">
+      <style>
+          body {
+              font-family: sans-serif;
+          }
+          .wrapper {
+              width: 500px;
+              margin: 50px auto;
+              box-shadow: 0 0 5px #ccc;
+              padding: 10px 30px 30px;
+          }
+      </style>
   </head>
   <body>
+      <a href="https://github.com/notablemind/tags"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+      <div class="wrapper">
     <h2>Tags Example</h2>
     <div id="place"></div>
-    <h2>Tags Networked</h2>
+    <h2>Tags Connected (demonstrate prev &amp; next)</h2>
     <div id="netwalk"></div>
     <h2>With externally induced focus</h2>
+    <h4>And load & save handlers</h4>
     <div id="foc"></div>
     <pre id="output"></pre>
+      </div>
     <script>
       var Tags = require('tags')
       var tags = React.renderComponent(Tags({
@@ -24,24 +39,20 @@
     <script>
       var t1 = require('tags')({
         next: function () {
-        //setTimeout(function () {
           t2.edit(0)
-          //}, 100)
           return true
         },
         defaultValue: ['one', 'two']
       })
       var t2 = Tags({
         prev: function () {
-        //setTimeout(function () {
           t1.focus()
-          //}, 100)
           return true
         },
         defaultValue: ['three', 'four']
       })
       React.renderComponent(React.DOM.div({}, [
-        t1, t2
+          t1, React.DOM.span({}, ' ---- '), t2
       ]), document.getElementById('netwalk'))
 
     </script>
