@@ -2,3 +2,4 @@ components
 build
 coverage.html
 node_modules
+test/react.js

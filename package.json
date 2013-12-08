@@ -16,7 +16,7 @@
     "blanket": {
       "pattern": ".js",
       "onlyCwd": true,
-      "data-cover-never": ["node_modules", "test"]
+      "data-cover-never": ["node_modules", "test", "build"]
     }
   },
   "repository": {
