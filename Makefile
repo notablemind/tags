@@ -23,4 +23,14 @@ test/react.js:
 example: test/react.js build
 	@xdg-open test/example.html
 
+gh-pages: test/react.js build
+	rm -rf web
+	cp -r test web
+	rm web/index.js web/index.css
+	cp build/build.js web/index.js
+	cp build/build.css web/index.css
+	git co gh-pages
+	mv web/* ./
+	rm -rf web
+
 .PHONY: clean test
