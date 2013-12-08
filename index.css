@@ -1,0 +1,39 @@
+.tags {
+  display: inline-block;
+}
+
+.tags .small-btn {
+  display: inline-block;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: #999;
+  border-radius: 10px;
+}
+
+.tags .small-btn:hover {
+  color: black;
+  background-color: #aaa;
+}
+
+.tags .tag {
+  display: inline-block;
+  border-radius: 10px;
+}
+
+.tags .tag:hover {
+  background-color: #ccc;
+}
+
+.tags .tag .text {
+  display: inline-block;
+  padding: 3px;
+  padding-left: 10px;
+}
+
+.tags input {
+  border: 1px solid #aaa;
+  padding: 4px 10px;
+  margin: 0;
+  width: 30px;
+  border-radius: 10px;
+}
