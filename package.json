@@ -1,6 +1,6 @@
 {
   "name": "tags",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Tags widget for reactjs",
   "main": "index.js",
   "directories": {
@@ -16,7 +16,11 @@
     "blanket": {
       "pattern": ".js",
       "onlyCwd": true,
-      "data-cover-never": ["node_modules", "test", "build"]
+      "data-cover-never": [
+        "node_modules",
+        "test",
+        "build"
+      ]
     }
   },
   "repository": {
