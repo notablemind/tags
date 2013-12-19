@@ -11,33 +11,19 @@ var Tags = React.createClass({displayName: 'Tags',
     return {
       plusButton: true,
       plusClass: '',
-      defaultValue: [],
+      value: [],
       className: ''
     }
   },
   getInitialState: function () {
-    var defaultValue = this.props.defaultValue
-      , value = defaultValue || []
-      , editing = this.props.editing
+    var editing = this.props.editing
       , input = ''
     editing = 'undefined' === typeof editing ? false : editing
     return {
-      value: value,
       editing: editing,
       focused: this.props.focused || false,
       input: input
     }
-  },
-
-  // loading data
-  componentWillMount: function () {
-    this.load()
-  },
-  load: function () {
-    if (!this.props.load) return;
-    this.props.load(function (tags) {
-      this.setState({value: tags})
-    }.bind(this))
   },
 
   // all about the focus
@@ -66,13 +52,12 @@ var Tags = React.createClass({displayName: 'Tags',
     var tags = this.state.value.slice()
     var nstate = states[name](this.state, this.props)
     if (!nstate) return
-    this.setState(nstate)
-    if (!nstate.value) return
-    if (!_.isEqual(tags, nstate.value) && this.props.save) {
-      this.props.save(nstate.value, function (tags) {
-        this.setState({value: tags})
-      }.bind(this))
+    if (nstate.value) {
+      tags = nstate.value
+      this.props.onChange(tags)
+      delete nstate.value
     }
+    this.setState(nstate)
   },
 
   keyDown: keys({
@@ -98,9 +83,9 @@ var Tags = React.createClass({displayName: 'Tags',
     this.stateChange('blur')
   },
   focus: function () {
-    var editing = this.state.value.length ? 0 : false
+    var editing = this.props.value.length ? 0 : false
     this.setState({
-      input: editing === false ? '' : this.state.value[editing],
+      input: editing === false ? '' : this.props.value[editing],
       editing: editing,
       focused: true,
     })
@@ -114,31 +99,26 @@ var Tags = React.createClass({displayName: 'Tags',
   },
   edit: function (i) {
     this.setState({
-      input: this.state.value[i],
+      input: this.props.value[i],
       focused: true,
       editing: i
     })
   },
   remove: function (i) {
-    var tags = this.state.value
+    var tags = this.props.value
     tags.splice(i, 1)
+    this.props.onChange(tags)
     this.setState({
       input: '',
       focused: false,
-      editing: false,
-      tags: tags
+      editing: false
     })
-    if (this.props.save) {
-      this.props.save(tags, function (tags) {
-        this.setState({value: tags})
-      }.bind(this))
-    }
   },
 
   // and the render!
   render: function () {
     var ln = this.state.input.length
-      , children = this.state.value.map(function (tag, i) {
+      , children = this.props.value.map(function (tag, i) {
           return React.DOM.div(
             {className:"tag"}, 
             React.DOM.span({className:"text", onClick:this.edit.bind(this, i)}, tag),

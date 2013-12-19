@@ -1,6 +1,6 @@
 
 build: components index.js tags.css
-	@component build --dev
+	@component build --dev -o test/example -n build
 
 components: component.json
 	@component install --dev
