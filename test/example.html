@@ -38,15 +38,15 @@
     </script>
     <script>
       var t1 = require('tags')({
-        next: function () {
+        onNext: function () {
           t2.edit(0)
           return true
         },
         defaultValue: ['one', 'two']
       })
       var t2 = Tags({
-        prev: function () {
-          t1.focus()
+        onPrev: function () {
+          t1.focusEnd()
           return true
         },
         defaultValue: ['three', 'four']

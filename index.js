@@ -9,6 +9,8 @@ var Tags = React.createClass({displayName: 'Tags',
 
   getDefaultProps: function () {
     return {
+      plusButton: true,
+      plusClass: '',
       defaultValue: [],
       className: ''
     }
@@ -137,12 +139,10 @@ var Tags = React.createClass({displayName: 'Tags',
   render: function () {
     var ln = this.state.input.length
       , children = this.state.value.map(function (tag, i) {
-          return (
-            React.DOM.div( {className:"tag"}, 
-              React.DOM.span( {className:"text", onClick:this.edit.bind(this, i)}, tag),
-              React.DOM.div( {className:"remove-tag small-btn",
-              onClick:this.remove.bind(this, i)}, "×")
-            )
+          return React.DOM.div(
+            {className:"tag"}, 
+            React.DOM.span({className:"text", onClick:this.edit.bind(this, i)}, tag),
+            React.DOM.div({className:"remove-tag small-btn", onClick:this.remove.bind(this, i)}, "×")
           )
         }.bind(this))
 
@@ -168,9 +168,9 @@ var Tags = React.createClass({displayName: 'Tags',
     return (
       React.DOM.div( {className:'tags ' + this.props.className}, 
         children,
-        React.DOM.span( {className:"plus small-btn",
+        React.DOM.span( {className:"plus small-btn " + this.props.plusClass,
               style:{display: (this.state.focused && false === this.state.editing) ? 'none' : 'inline-block'},
-              onClick:this.focus}, "+")
+              onClick:this.focusEnd}, this.props.plusButton ? "+" : '')
       )
     )
   }
