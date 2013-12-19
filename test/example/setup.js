@@ -1,6 +1,21 @@
+var StateTagses = React.createClass({
+  getInitialState: function () {
+    return {
+      value: this.props.initialValue || []
+    }
+  },
+  onChange: function (tags) {
+    this.setState({value: tags})
+  },
+  render: function () {
+    return Tags({value: this.state.value, onChange: this.onChange})
+  }
+})
+
+
 var Tags = require('tags')
-var tags = React.renderComponent(Tags({
-  value: ['one', 'two', 'three', 'four', 'five']
+var tags = React.renderComponent(StateTagses({
+  initialValue: ['one', 'two', 'three', 'four', 'five']
 }), document.getElementById('place'))
 
 

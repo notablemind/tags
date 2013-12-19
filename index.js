@@ -9,6 +9,9 @@ var Tags = React.createClass({displayName: 'Tags',
 
   getDefaultProps: function () {
     return {
+      onChange: function () {
+        console.warn('Trying to change tags, but no onChange handler set')
+      },
       plusButton: true,
       plusClass: '',
       value: [],
@@ -49,8 +52,8 @@ var Tags = React.createClass({displayName: 'Tags',
   },
 
   stateChange: function (name) {
-    var tags = this.state.value.slice()
-    var nstate = states[name](this.state, this.props)
+    var tags = this.props.value.slice()
+    var nstate = states[name](tags, this.state, this.props)
     if (!nstate) return
     if (nstate.value) {
       tags = nstate.value
