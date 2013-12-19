@@ -7,6 +7,12 @@ var _ = require('lodash')
 
 var Tags = React.createClass({displayName: 'Tags',
 
+  getDefaultProps: function () {
+    return {
+      defaultValue: [],
+      className: ''
+    }
+  },
   getInitialState: function () {
     var defaultValue = this.props.defaultValue
       , value = defaultValue || []
@@ -90,6 +96,14 @@ var Tags = React.createClass({displayName: 'Tags',
     this.stateChange('blur')
   },
   focus: function () {
+    var editing = this.state.value.length ? 0 : false
+    this.setState({
+      input: editing === false ? '' : this.state.value[editing],
+      editing: editing,
+      focused: true,
+    })
+  },
+  focusEnd: function () {
     this.setState({
       input: '',
       focused: true,

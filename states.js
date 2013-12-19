@@ -23,6 +23,9 @@ function shiftTab(state, props) {
   var tags = state.value
   if (state.editing === false) {
     if (state.input.trim() === '') {
+      if (state.value.length === 0 && props && props.onPrev && props.onPrev()) {
+        return {focused: false, value: [], input: ''}
+      }
       return stateMe(state, {
         editing: state.value.length ? state.value.length - 1 : false,
       })
@@ -41,7 +44,7 @@ function shiftTab(state, props) {
   } else {
     tags[state.editing] = state.input
   }
-  if (state.editing === 0 && props && props.prev && props.prev()) {
+  if (state.editing === 0 && props && props.onPrev && props.onPrev()) {
     return {focused: false, value: tags, input: ''}
   }
   return stateMe(state, {
@@ -54,7 +57,7 @@ function tab(state, props) {
   var tags = state.value
   if (state.editing === false) {
     if (state.input.trim() === '') {
-      if (props && props.next && props.next()) {
+      if (props && props.onNext && props.onNext()) {
         return {focused: false, input: ''}
       }
       return
