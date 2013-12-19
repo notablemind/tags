@@ -4,8 +4,10 @@ var expect = require('expect.js')
   , lib = require('../states')
 
 function checkTrans(from, to, fn) {
-  var pres = _.extend({}, from)
-    , res = fn(from) || from
+  var tags = from.value
+  delete from.value
+  var pres = _.extend({value: tags}, from)
+    , res = fn(tags, from) || from
     , comp = _.extend(pres, res)
   for (var name in to) {
     expect(comp[name]).to.eql(to[name])
