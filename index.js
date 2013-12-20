@@ -14,8 +14,8 @@ var Tags = React.createClass({displayName: 'Tags',
       },
       plusButton: true,
       plusClass: '',
-      value: [],
-      className: ''
+      className: '',
+      value: []
     }
   },
   getInitialState: function () {
