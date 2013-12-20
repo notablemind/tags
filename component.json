@@ -8,7 +8,9 @@
     "lodash/lodash": "*",
     "notablemind/keys": "*"
   },
-  "development": {},
+  "development": {
+    "notablemind/tags-theme-simple": "*"
+  },
   "license": "MIT",
   "main": "index.js",
   "scripts": [

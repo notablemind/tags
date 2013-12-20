@@ -101,6 +101,7 @@ var Tags = React.createClass({displayName: 'Tags',
     })
   },
   edit: function (i) {
+    if (i >= this.props.value.length) return this.focusEnd()
     this.setState({
       input: this.props.value[i],
       focused: true,
@@ -120,7 +121,7 @@ var Tags = React.createClass({displayName: 'Tags',
 
   // and the render!
   render: function () {
-    var ln = this.state.input.length
+    var ln = this.state.input ? this.state.input.length : 0
       , children = this.props.value.map(function (tag, i) {
           return React.DOM.div(
             {className:"tag"}, 
@@ -149,9 +150,9 @@ var Tags = React.createClass({displayName: 'Tags',
     }
 
     return (
-      React.DOM.div( {className:'tags ' + this.props.className}, 
+      React.DOM.div({className:'tags ' + this.props.className}, 
         children,
-        React.DOM.span( {className:"plus small-btn " + this.props.plusClass,
+        React.DOM.span({className:"plus small-btn " + this.props.plusClass,
               style:{display: (this.state.focused && false === this.state.editing) ? 'none' : 'inline-block'},
               onClick:this.focusEnd}, this.props.plusButton ? "+" : '')
       )

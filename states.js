@@ -14,7 +14,7 @@ function stateMe(tags, cur, state) {
   if (false !== full.editing) {
     if (full.editing < 0) state.editing = full.editing = 0
     if (full.editing > tags.length - 1) state.editing = full.editing = false
-    if (full.editing !== false) state.input = tags[state.editing]
+    if (full.editing !== false) state.input = tags[state.editing] || ''
   }
   return state
 }
