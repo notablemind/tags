@@ -99,10 +99,13 @@ function backspace(tags, state) {
   })
 }
 
-function return_(tags, state) {
+function return_(tags, state, props) {
   if (state.editing !== false) {
     tags[state.editing] = state.input
   } else {
+    if (state.input.trim() === '') {
+      return props.onReturn && props.onReturn()
+    }
     tags.push(state.input)
   }
   return {
