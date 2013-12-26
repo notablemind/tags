@@ -6,3 +6,4 @@ test/react.js
 test/example/build.js
 test/example/build.css
 test/example/react.js
+*.swp
